@@ -1,0 +1,77 @@
+--Problem 1
+
+CREATE TABLE store_reps
+  (rep_id Number(5),
+   last Varchar2(15),
+   first Varchar2(10),
+   comm Char(1) DEFAULT 'Y',
+   CONSTRAINT storereps_repid_pk PRIMARY KEY (rep_id)
+   );
+   
+--Problem 2
+
+ALTER TABLE store_reps
+  MODIFY(first NOT NULL);
+  
+ALTER TABLE store_reps
+  MODIFY(last NOT NULL);
+  
+--Problem 3
+
+ALTER TABLE store_reps
+  ADD CONSTRAINT storereps_comm_ck CHECK (comm IN('Y','N'));
+  
+--Problem 4
+
+ALTER TABLE store_reps
+  ADD (base_salary Number(7,2)  
+    Constraint storereps_basesalaray_ck CHECK (base_salary > 0));
+    
+--Problem 5
+
+CREATE TABLE book_stores
+  (store_id Number(8),
+   name Varchar2(30) NOT NULL,
+   contact Varchar2(20),
+   rep_id Varchar2(5),
+   Constraint bookstores_soreid_pk PRIMARY KEY (store_id),
+   Constraint bookstores_name_uk UNIQUE (name));
+ 
+--Problem 6 & 7
+
+ALTER TABLE book_stores
+  MODIFY (rep_id Number(5));
+
+ALTER TABLE book_stores
+  ADD CONSTRAINT bookstores_repid_fk FOREIGN KEY (rep_id)
+    REFERENCES store_reps (rep_id) ON DELETE CASCADE;
+    
+--Problem 8
+
+CREATE TABLE rep_contracts
+  (store_id Number(8),
+   name Number(5),
+   quarter char(3),
+   rep_id number(5),
+   CONSTRAINT repcontacts_pk PRIMARY KEY (store_id, rep_id, quarter),
+   CONSTRAINT repcontacts_repid_fk FOREIGN KEY (rep_id)
+    References store_reps (rep_id),
+   CONSTRAINT repcontacts_storeid_fk FOREIGN KEY (store_id)
+    References book_stores (store_id));
+    
+--Problem 8
+
+SELECT constraint_name, constraint_type, search_condition, 
+  FROM user_constraints
+    WHERE table_name = 'STORE_REPS';
+    
+--Problem 10
+
+ALTER TABLE store_reps
+  DISABLE CONSTRAINT storereps_basesalaray_ck;
+  
+ALTER TABLE store_reps
+  ENABLE CONSTRAINT storereps_basesalaray_ck;
+
+
+    
